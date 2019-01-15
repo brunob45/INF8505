@@ -1,0 +1,5 @@
+<project name="Project" processor="tinycore2" lib="../lib">
+    <file type="c" name="test2.c" path=""/>
+    <option id="project.name" value="test2"/>
+    <option id="project.type" value="exe"/>
+</project>

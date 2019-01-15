@@ -1,0 +1,10 @@
+<project name="Project" processor="tinycore" lib="../lib-zloop">
+    <file type="c" name="sort.c" path=""/>
+    <issinit/>
+    <option id="bridge.cfg" value="tinycore.bcf"/>
+    <option id="bridge.map.file" value="on"/>
+    <option id="paths.iss" value="&lt;PROCDIR&gt;/../iss-zloop/tinycore"/>
+    <option id="project.name" value="sort"/>
+    <option id="project.type" value="exe"/>
+    <simdll name="Simulator DLL" simulator="../iss-zloop/tinycore_ia"/>
+</project>

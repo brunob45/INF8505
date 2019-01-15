@@ -1,0 +1,49 @@
+<processor name="Processor">
+    <compilation name="Compilation">
+        <configurations name="Configurations">
+            <configuration name="Release"/>
+            <configuration name="Debug"/>
+            <option id="level.lvl" value="0" cfg="Debug"/>
+            <option id="level.lvl" value="1" cfg="Release"/>
+        </configurations>
+        <level name="Level 0" lvl="0">
+            <option id="backend.mist2.debug" value="on"/>
+            <option id="llvm.optim" value="0"/>
+            <option id="noodle.debug.osps" value="on"/>
+            <option id="noodle.debug.sa" value="sal"/>
+            <option id="noodle.debug.sca" value="on"/>
+            <option id="noodle.debug.wflla" value="on"/>
+            <option id="noodle.optim.noifv" value="on"/>
+            <option id="noodle.optim.nolsw" value="on"/>
+            <option id="noodle.optim.norle" value="on"/>
+            <option id="noodle.optim.notcr" value="on"/>
+        </level>
+        <level name="Level 1" lvl="1">
+            <option id="llvm.optim" value="s"/>
+        </level>
+        <library name="Processor model">
+            <option id="cpp.include" value="" inherit="0"/>
+            <option id="noodle.alwinc" value="" inherit="0"/>
+            <view in="1" type="c" name="Compilation"/>
+            <view in="1" type="a" name="Linking and (dis)assembling"/>
+            <view in="1" type="s" name="Simulation"/>
+            <view in="1" type="h" name="HDL generation"/>
+        </library>
+        <option id="backend.cosel.fse" value="all"/>
+        <option id="backend.cosel.move" value="on"/>
+        <option id="backend.mist2.nops" value="on"/>
+        <option id="llvm.alwinc" value="&lt;PROCESSOR&gt;_llvm.h" inherit="1"/>
+        <option id="noodle.alwinc" value="&lt;PROCESSOR&gt;_chess.h" inherit="1"/>
+        <option id="noodle.optim.rlt" value="no"/>
+        <option id="project.dasobj" value="on"/>
+        <option id="project.dastgt" value="on"/>
+        <option id="project.dwarf" value="on"/>
+    </compilation>
+    <hdlgeneration name="HDL generation"/>
+    <option id="animal.printhaz" value="on"/>
+    <simulation name="Simulator generation" mode="top">
+        <sim name="Cycle accurate" mode="ca"/>
+        <sim name="Instruction accurate" mode="ia"/>
+        <sim name="Debug client" mode="db"/>
+    </simulation>
+</processor>

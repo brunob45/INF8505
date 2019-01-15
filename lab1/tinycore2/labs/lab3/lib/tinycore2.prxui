@@ -1,0 +1,26 @@
+<prxusersettings>
+    <zlayout>
+        <perspective type="nml">
+            <VerPaneNode>
+                <HorPaneNode size="2">
+                    <ViewBookNode size="2">
+                        <window name="::ProjectView" visible="1" select="1"/>
+                    </ViewBookNode>
+                    <EditorBookNode size="3">
+                        <window name="::editor0" visible="1" select="0"/>
+                        <window name="::editor1" visible="1" select="0"/>
+                        <window name="::editor2" visible="1" select="1"/>
+                        <window name="::editor3" visible="1" select="0"/>
+                    </EditorBookNode>
+                </HorPaneNode>
+                <ViewBookNode size="1">
+                    <window name="::ConsoleView" visible="1" select="1"/>
+                </ViewBookNode>
+            </VerPaneNode>
+        </perspective>
+        <editor id="::editor0" file="tinycore2.n" top="54.0" cursor="82.31" foldmap="1" linemap="0"/>
+        <editor id="::editor1" file="tinycore2.h" top="23.0" cursor="46.44" foldmap="1" linemap="0"/>
+        <editor id="::editor2" file="tinycore2_pcu.p" top="19.0" cursor="32.1" foldmap="1" linemap="0"/>
+        <editor id="::editor3" file="tinycore2.p" top="1.0" cursor="33.14" foldmap="1" linemap="0"/>
+    </zlayout>
+</prxusersettings>

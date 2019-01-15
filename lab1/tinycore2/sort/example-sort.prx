@@ -1,0 +1,8 @@
+<project name="Project" processor="tinycore" lib="../lib-solution">
+    <file type="c" name="sort.c" path=""/>
+    <option id="bridge.cfg" value="tinycore.bcf"/>
+    <option id="bridge.map.file" value="on"/>
+    <option id="paths.iss" value="../iss-solution/tinycore"/>
+    <option id="project.name" value="sort"/>
+    <option id="project.type" value="exe"/>
+</project>

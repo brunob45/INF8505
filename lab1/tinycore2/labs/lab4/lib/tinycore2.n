@@ -1,0 +1,195 @@
+/*
+-- File : tinycore2.n (lab4)
+--
+-- Contents : nML description of tinycore2 processor.
+--
+-- Copyright (c) 2014-2017 Synopsys, Inc. This Synopsys processor model 
+-- captures an ASIP Designer Design Technique. The model and all associated 
+-- documentation are proprietary to Synopsys, Inc. and may only be used 
+-- pursuant to the terms and conditions of a written license agreement with 
+-- Synopsys, Inc.  All other use, reproduction, modification, or distribution 
+-- of the Synopsys processor model or the associated  documentation is 
+-- strictly prohibited. 
+*/
+
+// -------------------
+// Structural skeleton
+// -------------------
+
+enum stage_names { IF, ID, E1, E2 };
+
+// Memories and registers:
+
+def dmSize = 2**10;
+
+mem PM[dmSize] <pmtype, word> access {
+    ld_pm: pmLdBus `1` = PM[pmAddr `0`] `1`;
+};
+
+mem DM[dmSize] <word, word> access {
+    ld_dm: dmLdBus `1` = DM[dmAddr `0`] `1`;
+    st_dm: DM[dmAddr] = dmStBus;
+};
+properties {
+    program_memory  : PM;
+    program_counter : PC;
+    unconnected : PM, DM;    
+    decode_stage    : ID;
+    endianness      : little;
+    default_cycles  : words;
+    control_signals : compact;
+}
+
+enum eR { r0, r1, r2, r3, r4, r5, lnk, sp };
+reg R[8]<word,threebitsu> syntax (eR)
+                          read   (aluA aluB dmStBus)
+                          write  (aluC dmLdBus);
+
+reg LR<word> alias R[6];
+reg SP<word> alias R[7];
+
+reg SREG<bool> read (sreg_r) write (sreg_w);
+
+reg PC<word> read (pc_r) write (pc_w);
+hw_init PC = 0;
+trn pc_offs<sbyte>;
+trn pc_trgt<word>;
+trn lnk_pf<word>;  // link to the instruction in the pre-fetch stage (PC+1),
+                   // i.e., the instruction after the delay slots of call/doloop
+
+
+start tinycore2;
+
+opn tinycore2 (alu_opn |
+              compare_opn |
+              cjump | ujump | bsr | rts | nop |
+              generate_byte |
+              load_upper |
+              bor_imm)
+{
+    image
+        : "000000"::alu_opn
+        | "000001"::compare_opn
+        | "000010"::cjump
+        | "000011"::ujump
+        | "00101001"::bsr
+        | "00101010xxxxxx"::rts
+        | "00101011xxxxxx"::nop
+        | "100"::generate_byte
+        | "101"::load_upper
+        | "110"::bor_imm
+        ;
+}
+
+enum alu_op {ADD " + ", SUB " - ", AND " & ", OR " | "};
+enum compare_op {LT " < ", LE " <= ", GT " > ", GE " >= "};
+
+cst c_8s <sbyte>;
+
+fu alu;
+trn aluA <word>;
+trn aluB <word>;
+trn aluC <word>;
+
+trn cnv8 <sbyte>;
+
+
+opn alu_opn (op : alu_op, a : eR, b : eR)
+{
+    action {
+    stage E1:
+        switch (op) {
+        case ADD :
+            aluC = add (aluA=R[a], aluB=R[b]) @ alu;
+        case SUB :
+            aluC = sub (aluA=R[a], aluB=R[b]) @ alu;
+        case AND :
+            aluC = band(aluA=R[a], aluB=R[b]) @ alu;
+        case OR :
+            aluC = bor (aluA=R[a], aluB=R[b]) @ alu;
+        }
+        R[a] = aluC;    // read-modify-write
+    }
+    syntax : a " = " a op b ;
+    image : op::a::b;
+}
+
+opn bor_imm (a : eR, b : c_8s)
+{
+    action {
+    stage E1:
+        R[a] = aluC = bor(aluA = R[a], aluB = b) @alu;
+    }
+    syntax : a " |= " dec b ;
+    image : b[7..3]::a::b[2..0];
+}
+
+opn compare_opn (op : compare_op, a : eR, b : eR)
+{
+    action {
+    stage E1:
+        switch (op) {
+        case LT :
+            SREG = lt(aluA=R[a], aluB=R[b]) @ alu;
+        case LE :
+            SREG = le(aluA=R[a], aluB=R[b]) @ alu;
+        case GT :
+            SREG = gt(aluA=R[a], aluB=R[b]) @ alu;
+        case GE :
+            SREG = ge(aluA=R[a], aluB=R[b]) @ alu;
+        }
+    }
+    syntax : "sreg = " a op b ;
+    image : op::a::b;
+}
+
+opn generate_byte (a : eR, val : c_8s)
+{
+    action : stage E1: R[a] = aluC = val;
+    syntax : a " = " dec val ;
+    image : val[7..3]::a::val[2..0];
+}
+
+opn load_upper (a : eR, val : c_8s)
+{
+    action : stage E1: R[a] = aluC = ldh(cnv8=val);
+    syntax : a ".hi = " dec val ;
+    image : val[7..3]::a::val[2..0];
+}
+
+opn ujump (offs : c_8s)
+{
+    action { stage ID: jumpi(pc_offs = offs); }
+    syntax : "goto " dec offs ;
+    image : offs, cycles(1), delay_slots(1), chess_pc_offset(1);
+}
+
+opn cjump (offs : c_8s)
+{
+    action { stage E1: jumpci(sreg_r = SREG, pc_offs = offs); }
+    syntax : "if (sreg) goto " dec offs ;
+    image : offs, cycles(1), delay_slots(2), chess_pc_offset(2);
+}
+
+opn bsr(a : eR)
+{
+    action { stage E1: LR = lnk_pf = bsr(pc_trgt = aluA = R[a]); }
+    syntax : "bsr " a ;
+    image  : a::"xxx", cycles(1), delay_slots(2);
+}
+
+opn rts ()
+{
+    action { stage E1: rts(pc_trgt = LR); }
+    syntax : "rts";
+    image: cycles(1), delay_slots(2) ;
+}
+
+
+opn nop ()
+{
+    action : stage E1: nop();
+    syntax : "nop";
+}
+
+

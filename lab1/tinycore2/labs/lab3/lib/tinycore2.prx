@@ -1,0 +1,37 @@
+<processor name="Processor">
+    <compilation name="Compilation">
+        <library name="Processor model">
+            <option id="cpp.include" value="" inherit="0"/>
+            <option id="noodle.alwinc" value="" inherit="0"/>
+            <view in="0" type="c" name="Compilation"/>
+            <view in="1" type="a" name="Linking and (dis)assembling"/>
+            <view in="1" type="s" name="Simulation"/>
+            <view in="1" type="h" name="HDL generation"/>
+        </library>
+        <option id="backend.cosel.fse" value="all"/>
+        <option id="backend.cosel.move" value="on"/>
+        <option id="backend.mist2.debug" value="on" cfg="Debug"/>
+        <option id="backend.mist2.nops" value="on"/>
+        <option id="llvm.optim" value="s" cfg="Release"/>
+        <option id="noodle.debug.osps" value="on" cfg="Debug"/>
+        <option id="noodle.debug.sa" value="sal" cfg="Debug"/>
+        <option id="noodle.debug.sca" value="on" cfg="Debug"/>
+        <option id="noodle.debug.wflla" value="on" cfg="Debug"/>
+        <option id="noodle.optim.notcr" value="on" cfg="Debug"/>
+        <option id="noodle.optim.rlt" value="no"/>
+        <option id="project.dasobj" value="on"/>
+        <option id="project.dastgt" value="on"/>
+        <option id="project.dwarf" value="on"/>
+        <option id="simrun.issca" value="&lt;PROCDIR&gt;/../iss/tinycore2_ca" inherit="1"/>
+    </compilation>
+    <configuration name="Release"/>
+    <configuration name="Debug"/>
+    <hdlgeneration name="HDL generation"/>
+    <option id="animal.printhaz" value="on"/>
+    <simulation name="Simulator generation" mode="top">
+        <sim name="Cycle accurate" mode="ca"/>
+        <sim name="Instruction accurate" mode="ia"/>
+        <sim name="Debug client" mode="db"/>
+    </simulation>
+    <zlayout/>
+</processor>

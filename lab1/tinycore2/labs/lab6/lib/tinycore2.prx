@@ -1,0 +1,51 @@
+<processor name="Processor">
+    <compilation name="Compilation">
+        <library name="Processor model">
+            <option id="noodle.alwinc" value="" inherit="0"/>
+            <option id="noodle.debug.osps" value="off"/>
+            <option id="noodle.debug.sa" value="none"/>
+            <option id="noodle.debug.sca" value="off"/>
+            <view in="1" type="c" name="Compilation"/>
+            <view in="1" type="a" name="Linking and (dis)assembling"/>
+            <view in="1" type="s" name="Simulation"/>
+            <view in="1" type="h" name="HDL generation"/>
+        </library>
+        <option id="backend.cosel.fse" value="all"/>
+        <option id="backend.cosel.move" value="on"/>
+        <option id="backend.mist2.debug" value="on" cfg="Debug"/>
+        <option id="bridge.map.calltree" value="on"/>
+        <option id="bridge.map.file" value="on"/>
+        <option id="noodle.alwinc" value="tinycore2_chess.h" inherit="1"/>
+        <option id="noodle.debug.osps" value="on" cfg="Debug"/>
+        <option id="noodle.debug.sa" value="sal" cfg="Debug"/>
+        <option id="noodle.debug.sca" value="on" cfg="Debug"/>
+        <option id="noodle.optim.notcr" value="on" cfg="Debug"/>
+        <option id="project.dasobj" value="on"/>
+        <option id="project.dastgt" value="on"/>
+        <option id="project.dir" value="&lt;CONFIG&gt;"/>
+        <option id="project.dwarf" value="on"/>
+        <option id="simrun.eombp" value="on"/>
+        <option id="simrun.issca" value="&lt;PROCDIR&gt;/../iss/tinycore2_ca" inherit="1"/>
+        <option id="simrun.issia" value="&lt;PROCDIR&gt;/../iss/tinycore2_ia" inherit="1"/>
+    </compilation>
+    <configuration name="Release"/>
+    <configuration name="Debug"/>
+    <hdlgeneration name="HDL generation">
+        <option id="hdl.usepcu" value="on"/>
+        <option id="hdl.usepdg" value="on"/>
+    </hdlgeneration>
+    <option id="processor.ena" value="off"/>
+    <reglayout>{{PC SP LF LC LS LE SREG} {R}}</reglayout>
+    <simulation name="Simulator generation" mode="top">
+        <option id="checkers.UsePCU" value="on"/>
+        <option id="checkers.UsePDG" value="on"/>
+        <sim name="Cycle accurate" mode="ca"/>
+        <sim name="Instruction accurate" mode="ia">
+            <option id="checkers.ControllerHeader" value="&lt;PROCDIR&gt;/tinycore2_iapcu.h"/>
+            <option id="checkers.InstructionAccurateEolFunction" value="on"/>
+            <option id="checkers.InstructionAccurateNextInstructionPCStorages" value="lnk_pf" inherit="1"/>
+        </sim>
+        <sim name="Debug client" mode="db"/>
+    </simulation>
+    <zlayout/>
+</processor>

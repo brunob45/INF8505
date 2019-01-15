@@ -1,0 +1,7 @@
+<project name="Project" processor="tinycore2" lib="../lib">
+    <file type="a" name="test1.s" path="" out="test1"/>
+    <option id="project.dasobj" value="off"/>
+    <option id="project.dastgt" value="off"/>
+    <option id="project.name" value="test1"/>
+    <option id="project.type" value="asm"/>
+</project>

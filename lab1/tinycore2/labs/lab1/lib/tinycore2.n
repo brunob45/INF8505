@@ -1,0 +1,26 @@
+
+mem PM[1024] <pmtype, word> access {
+    ld_pm: pmLdBus `1` = PM[pmAddr `0`] `1`;
+};
+mem DM[1024] <word, word> access {
+    ld_dm: dmLdBus `1` = DM[dmAddr `0`] `1`;
+    st_dm: DM[dmAddr] = dmStBus;
+};
+
+enum eR { r0, r1, r2, r3, r4, r5, lnk, sp };
+reg R[8]<word,threebitsu> syntax (eR)
+                          read   (aluA aluB dmStBus)
+                          write  (aluC dmLdBus);
+reg LR<word> alias R[6];
+reg SP<word> alias R[7];
+
+reg SREG<bool> read (sreg_r)
+               write (sreg_w);
+
+reg PC<word> read (pc_r)
+             write (pc_w);
+             
+properties {
+    program_memory  : PM;
+    program_counter : PC;
+}
