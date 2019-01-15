@@ -27,10 +27,14 @@ chess_properties {
  // Representation of built-in types
 
     // Lab 5.1 (3): Add a representation for types int, unsigned and void* 
-
+    representation int      : word;
+    representation unsigned : word;
+    representation void*    : word;
+    
  // ABI
 
     // Lab 5.1 (5): Add a property to organize the argument passing 
+    argument_registers : R;
     link_register   : LR;
 
  // Stop when instruction enters this stage
@@ -41,6 +45,8 @@ chess_properties {
 // Definition of built-in operators
 
 // Lab 5.1 (4): Define a mapping for the int+int and int-int operators
+promotion int operator+(int,int) = word add(word,word);
+promotion int operator-(int,int) = word sub(word,word);
 
 // Two-step generation of 16 bit constants
 

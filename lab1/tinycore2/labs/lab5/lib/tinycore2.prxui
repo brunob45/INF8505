@@ -1,0 +1,20 @@
+<prxusersettings>
+    <zlayout>
+        <perspective type="nml">
+            <VerPaneNode>
+                <HorPaneNode size="2">
+                    <ViewBookNode size="2">
+                        <window name="::ProjectView" visible="1" select="1"/>
+                    </ViewBookNode>
+                    <EditorBookNode size="3">
+                        <window name="::editor0" visible="1" select="1"/>
+                    </EditorBookNode>
+                </HorPaneNode>
+                <ViewBookNode size="1">
+                    <window name="::ConsoleView" visible="1" select="1"/>
+                </ViewBookNode>
+            </VerPaneNode>
+        </perspective>
+        <editor id="::editor0" file="tinycore2_chess.h" top="16.0" cursor="37.27" foldmap="1" linemap="0"/>
+    </zlayout>
+</prxusersettings>
