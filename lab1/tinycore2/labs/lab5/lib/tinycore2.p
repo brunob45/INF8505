@@ -20,6 +20,10 @@ word bor(word a, word b)  { return a | b; }
 
 word band(word a, word b) { return a & b; }
 
+word mul(word a, word b)  { return a * b; }
+
+word srl(word a, word b)  { return a >> b; }
+
 bool lt(word a, word b) { return a < b; }
 
 bool le(word a, word b) { return a <= b; }

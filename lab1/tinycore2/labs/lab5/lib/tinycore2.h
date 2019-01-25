@@ -37,6 +37,8 @@ namespace tinycore2_primitive {
     word sub (word, word);
     word band(word, word) property(commutative);
     word bor (word, word) property(commutative);
+    word mul (word, word) property(commutative);
+    word srl (word, word);
 
     bool lt(word, word);
     bool le(word, word);

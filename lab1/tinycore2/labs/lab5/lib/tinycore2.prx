@@ -26,7 +26,7 @@
         <option id="project.dwarf" value="on"/>
         <option id="simrun.eombp" value="on"/>
         <option id="simrun.issca" value="&lt;PROCDIR&gt;/../iss/tinycore2_ca" inherit="1"/>
-        <option id="simrun.issia" value="&lt;PROCDIR&gt;/../iss/tinycore2_ia" inherit="1"/>
+        <option id="simrun.issia" value="&lt;PROCDIR&gt;/../iss/tinycore2_ca" inherit="1"/>
     </compilation>
     <configuration name="Release"/>
     <configuration name="Debug"/>
@@ -47,5 +47,4 @@
         </sim>
         <sim name="Debug client" mode="db"/>
     </simulation>
-    <zlayout/>
 </processor>

@@ -47,6 +47,8 @@ chess_properties {
 // Lab 5.1 (4): Define a mapping for the int+int and int-int operators
 promotion int operator+(int,int) = word add(word,word);
 promotion int operator-(int,int) = word sub(word,word);
+promotion int operator*(int,int) = word mul(word,word);
+promotion int operator>>(int,int) = word srl(word,word);
 
 // Two-step generation of 16 bit constants
 

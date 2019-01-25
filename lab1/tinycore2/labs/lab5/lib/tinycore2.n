@@ -51,7 +51,7 @@ trn lnk_pf<word>;  // link to the instruction in the pre-fetch stage (PC+1),
 
 // Constants:
 
-enum alu_op {ADD " + ", SUB " - ", AND " & ", OR " | "};
+enum alu_op {ADD " + ", SUB " - ", AND " & ", OR " | ", MUL " * ", SRL " >> "};
 enum compare_op {LT " < ", LE " <= ", GT " > ", GE " >= "};
 
 cst c_8s    <sbyte>;
@@ -96,7 +96,7 @@ opn tinycore2 (alu_opn |
               bor_imm)
 {
     image
-        : "000000"::alu_opn
+        : "01000"::alu_opn
         | "000001"::compare_opn
         | "0010000"::load_indirect
         | "0010001"::store_indirect   
@@ -125,6 +125,10 @@ opn alu_opn (op : alu_op, a : eR, b : eR)
             aluC = band(aluA=R[a], aluB=R[b]) @ alu;
         case OR :
             aluC = bor (aluA=R[a], aluB=R[b]) @ alu;
+        case MUL :
+            aluC = mul (aluA=R[a], aluB=R[b]) @ alu;
+        case SRL :
+            aluC = srl (aluA=R[a], aluB=R[b]) @ alu;
         }
         R[a] = aluC;    // read-modify-write
     }
