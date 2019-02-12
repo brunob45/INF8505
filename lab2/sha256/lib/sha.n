@@ -1,0 +1,75 @@
+/*
+-- File : sha.n
+*/
+
+
+reg RA <w32> alias R[3] read(rar) write(raw);  
+reg RB <w32> alias R[4] read(rbr) write(rbw);  
+reg RC <w32> alias R[5] read(rcr) write(rcw);  
+reg RD <w32> alias R[6] read(rdr) write(rdw);  
+reg RE <w32> alias R[7] read(rer) write(rew);  
+reg RF <w32> alias R[8] read(rfr) write(rfw);  
+reg RG <w32> alias R[9] read(rgr) write(rgw);  
+reg RH <w32> alias R[10] read(rhr) write(rhw);  
+
+reg R11 <w32> alias R[11] read(r11r) write(r11w);
+reg R12 <w32> alias R[12] read(r12r) write(r12w);
+
+fu sha;
+trn shaX<w32>;
+
+opn sha_instr(sha256_ci | zloop_bor);
+
+
+opn sha256_ci()
+{	
+    action { 
+    stage EX:
+       sha256_ci(rar=RA,rbr=RB,rcr=RC,rdr=RD,rer=RE,rfr=RF,rgr=RG,rhr=RH,
+                  r11r=R11,r12r=R12,
+                  RA=raw,RB=rbw,RC=rcw,RD=rdw,RE=rew,RF=rfw,RG=rgw,RH=rhw) @sha;
+    }
+    syntax : "sha256ci" ",r3,r4,r5,r6,r7,r8,r9,r10,r11,r12";
+    image  : opcode.function::"00000000"::"0000000"::function_code.sha256ci;
+}
+
+// Zero overhead loop instruction
+
+reg LC<w32> read(lcr) write(lcw);
+reg LS<w32> read(lsr) write(lsw);
+reg LE<w32> read(ler) write(lew);
+
+enum eL { lc, ls, le };
+
+opn zloop_bor(d: eL, s1: mR1, i: c16u)
+{
+    action {
+    stage EX:
+        s1;
+        aluC = bor(aluA=s1,aluB=i) @alu;
+        switch (d) {
+        case lc: LC = lcw = aluC;
+        case ls: LS = lsw = aluC;
+        case le: LE = lew = aluC;
+        }
+    }
+    syntax : "bor " d "," s1 ",#" i;
+    image  : opcode.borl::s1::"000"::d::i;
+}
+
+// ensure loop count registers are witten before end of loop test
+
+sw_stall 1..2 instructions () {  LC = ...; } -> { special(end_of_loop); }
+sw_stall 1..2 instructions () {  LS = ...; } -> { special(end_of_loop); }
+sw_stall 1..2 instructions () {  LE = ...; } -> { special(end_of_loop); }
+
+// regular stall rules related  loop end test (TO BE VERIFIED)
+
+sw_stall 1..2 instructions () { br(cnd,of16); } -> { special(end_of_loop); }
+sw_stall 1..2 instructions () { j(of26); } -> { special(end_of_loop); }
+sw_stall 1..2 instructions () { jr(trgt); } -> { special(end_of_loop); }
+
+#if defined(__programmers_view__)
+sw_stall 1..2 instructions () { lnk=jalr(trgt); } -> { special(end_of_loop); }
+sw_stall 1..2 instructions () { lnk=jal(of26); } -> { special(end_of_loop); }
+#endif

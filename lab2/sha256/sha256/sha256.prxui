@@ -1,0 +1,76 @@
+<prxusersettings>
+    <zlayout>
+        <perspective type="iss">
+            <HorPaneNode>
+                <VerPaneNode size="615">
+                    <ViewBookNode size="3">
+                        <window name="::ProjectView" visible="1" select="0"/>
+                        <window name="::MicView" visible="1" select="1"/>
+                    </ViewBookNode>
+                    <ViewBookNode size="2">
+                        <window name="::StatsView" visible="1" select="1"/>
+                        <window name="::RegisterView" visible="1" select="0"/>
+                        <window name="::StorageView" visible="0" select="0"/>
+                        <window name="::PipelineView" visible="1" select="0"/>
+                        <window name="::IssWaveformView" visible="1" select="0"/>
+                    </ViewBookNode>
+                </VerPaneNode>
+                <VerPaneNode size="1299">
+                    <EditorBookNode size="629">
+                        <window name="::editor0" visible="1" select="0"/>
+                        <window name="::editor1" visible="1" select="1"/>
+                    </EditorBookNode>
+                    <ViewBookNode size="125">
+                        <window name="::HostedIOView" visible="1" select="1"/>
+                        <window name="::FileIOView" visible="1" select="0"/>
+                        <window name="::VarInfoView" visible="0" select="0"/>
+                        <window name="::LocalVarView" visible="1" select="0"/>
+                        <window name="::BreakWatchView" visible="0" select="0"/>
+                        <window name="::ProfilingView" visible="1" select="0"/>
+                    </ViewBookNode>
+                    <ViewBookNode size="37">
+                        <window name="::ConsoleView" visible="1" select="1"/>
+                    </ViewBookNode>
+                </VerPaneNode>
+            </HorPaneNode>
+        </perspective>
+        <perspective type="dev">
+            <VerPaneNode>
+                <HorPaneNode size="2">
+                    <ViewBookNode size="2">
+                        <window name="::ProjectView" visible="1" select="1"/>
+                        <window name="::SrcRefView" visible="0" select="0"/>
+                    </ViewBookNode>
+                    <EditorBookNode size="3">
+                        <window name="::editor0" visible="1" select="0"/>
+                        <window name="::editor1" visible="1" select="1"/>
+                    </EditorBookNode>
+                </HorPaneNode>
+                <ViewBookNode size="1">
+                    <window name="::ConsoleView" visible="1" select="1"/>
+                </ViewBookNode>
+            </VerPaneNode>
+        </perspective>
+        <editor id="::editor0" file="../lib/tlx_init.s" top="1.0" cursor="1.0" foldmap="1" linemap="0"/>
+        <editor id="::editor1" file="sha256.c" top="46.0" cursor="71.8" foldmap="1" linemap="0"/>
+    </zlayout>
+    <issui>iss varinfo::locals last_sort {1 -increasing}
+iss profiling storage_access_history_logging Off
+iss registers isvisible {} notvisible {}
+iss storages isvisible {} notvisible {}
+iss varinfo::statics last_sort {1 -increasing}
+iss memory::DM2 start_field 0 vector 0
+iss memory::DMw_stat start_field 0 vector 0
+iss memory::DMh_stat start_field 0 vector 0
+iss memory::DM3 start_field 0 vector 0
+iss memory::DMh start_field 0 vector 0
+iss memory::DM0 start_field 0 vector 0
+iss memory::DMw start_field 0 vector 0
+iss memory::DMb start_field 0 vector 0
+iss memory::DM1 start_field 0 vector 0
+iss memory::PM start_field 0 vector 0
+iss profiling value(stepped) 1 value(profile_storages) {__mcs6_guard__ifetch__ __mcs8__pm_addr__0_delayed __mcs____p_addr_r__1_delayed banks__ld0_ff banks__ld1_ff banks__ld2_ff banks__ld3_ff controller__reg_booting controller__reg_stall_trgt controller__reg_stall_trgt_valid DMb DMb_stat DMh DMh_stat DMw DMw_stat LC LE LR LS MC ocd_addr ocd_data ocd_instr PC PH PL PM R R0 R1 R2 R3 R4 R5 R6 R7 R8 R9 R10 R11 R12 R13 R14 R15 RA RB RC RD RE RF RG RH RI RJ SP}
+iss waveform vars time signal_info {time {color green num_format %x}}</issui>
+    <active cfg="Release" dbg="&lt;None&gt;"/>
+    <selectsim type="ISSCA" exe="&lt;PROCDIR&gt;/../iss/tlx_ca"/>
+</prxusersettings>

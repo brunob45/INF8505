@@ -1,0 +1,6 @@
+sha256-sha256_transform_.o
+sha256-sha256_.o
+sha256-print_hash_.o
+sha256-convert_hash_.o
+sha256-main_.o
+sha256.gvt.o

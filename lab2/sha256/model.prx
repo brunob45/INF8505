@@ -1,0 +1,11 @@
+<batch name="Batch project" processor="tlx" lib="lib">
+    <prj kind="project" name="libtlx" path="lib" configuration="Release"/>
+    <prj kind="project" name="libnative.prx" path="&lt;PROCDIR&gt;" configuration="Native"/>
+    <prj kind="project" name="softfloat" path="lib/softfloat" configuration="Release"/>
+    <prj kind="project" name="libc" path="lib/runtime" configuration="Release"/>
+    <prj kind="project" name="libm" path="lib/runtime" configuration="Release"/>
+    <prj kind="simulator" name="tlx_ca" path="iss"/>
+	<prj kind="hdlgenerator" name="tlx_vhdl" path="hdl"/>
+    <prj kind="hdlgenerator" name="tlx_vlog" path="hdl"/>
+    <prj kind="project" name="libnative.prx" path="lib" configuration="Native"/>
+</batch>
