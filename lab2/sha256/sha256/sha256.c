@@ -38,11 +38,19 @@ void sha256_transform(uchar data[],
    uint a,b,c,d,e,f,g,h, i,j,t1,t2,m[64];
      
    for (i=0,j=0; i < 16; ++i, j += 4) {
-      m[i] = (data[j] << 24) | (data[j+1] << 16) | (data[j+2] << 8) | (data[j+3]);
+        #ifdef custom_instruction
+            m[i] = sha256_in2(data[j], data[j+1], data[j+2], data[j+3]);
+        #else
+            m[i] = (data[j] << 24) | (data[j+1] << 16) | (data[j+2] << 8) | (data[j+3]);
+        #endif
    }   
      
    for ( ; i < 64; ++i) {
-        m[i] = SIG1(m[i-2]) + m[i-7] + SIG0(m[i-15]) + m[i-16];
+        #ifdef custom_instruction
+            m[i] = sha256_in1(m[i-2], m[i-7], m[i-15], m[i-16]);
+        #else
+            m[i] = SIG1(m[i-2]) + m[i-7] + SIG0(m[i-15]) + m[i-16];
+        #endif
    }
    
    a = h0;

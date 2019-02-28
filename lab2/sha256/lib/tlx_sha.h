@@ -18,6 +18,17 @@ inline void sha256_ci(unsigned& a, unsigned& b, unsigned& c, unsigned& d,
                         unsigned& e, unsigned& f, unsigned& g, unsigned& h, unsigned ki, unsigned mi)
 {
     sha256_ci(a,b,c,d,e,f,g,h,ki,mi,a,b,c,d,e,f,g,h);          
-}             
-#endif /* _tlx_sha_h */
+}     
 
+promotion
+    unsigned sha256_in1(unsigned a, unsigned b, unsigned c, unsigned d)
+    =
+    w32 sha256_in1(w32 a, w32 b, w32 c, w32 d);
+    
+
+promotion
+    unsigned sha256_in2(unsigned a, unsigned b, unsigned c, unsigned d)
+    =
+    w32 sha256_in2(w32 a, w32 b, w32 c, w32 d);
+    
+#endif /* _tlx_sha_h */

@@ -94,6 +94,8 @@ enum function_code {
     lmuluu,
     clb,
     sha256ci,
+    sha256_in1,
+    sha256_in2,
 
     lb        = 0x30, // load/store with post modify
     lbu,

@@ -18,7 +18,7 @@ reg R12 <w32> alias R[12] read(r12r) write(r12w);
 fu sha;
 trn shaX<w32>;
 
-opn sha_instr(sha256_ci | zloop_bor);
+opn sha_instr(sha256_ci | sha256_in1 | sha256_in2 | zloop_bor);
 
 
 opn sha256_ci()
@@ -33,6 +33,25 @@ opn sha256_ci()
     image  : opcode.function::"00000000"::"0000000"::function_code.sha256ci;
 }
 
+opn sha256_in1()
+{
+    action {
+    stage EX:
+        RE = sha256_in1(rar=RA,rbr=RB,rcr=RC,rdr=RD) @sha;
+    }
+    syntax : RE "sha256_in1" ",r3,r4,r5,r6";
+    image  : opcode.function::"00000000"::"0000000"::function_code.sha256_in1;
+}
+
+opn sha256_in2()
+{
+    action {
+    stage EX:
+        RE = sha256_in2(rar=RA,rbr=RB,rcr=RC,rdr=RD) @sha;
+    }
+    syntax : RE "sha256_in2" ",r3,r4,r5,r6";
+    image  : opcode.function::"00000000"::"0000000"::function_code.sha256_in2;
+}
 // Zero overhead loop instruction
 
 reg LC<w32> read(lcr) write(lcw);

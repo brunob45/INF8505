@@ -91,6 +91,9 @@ namespace tlx_primitive {
                      w32 e, w32 f, w32 g, w32 h, w32 ki, w32 mi,
                      w32& n, w32& o, w32& p, w32& q,
                      w32& r, w32& s, w32& t, w32& u);
+    
+    w32 sha256_in1(w32 a, w32 b, w32 c, w32 d);
+    w32 sha256_in2(w32 a, w32 b, w32 c, w32 d);
 
 // control primitives 
 

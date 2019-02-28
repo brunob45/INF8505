@@ -1,0 +1,17 @@
+ModuleReadsTransitory = banks dm0_rd dm1_rd dm2_rd dm3_rd dm_addr dmb_wr dmh_wr dmw_wr ld_dmb ld_dmh ld_dmw st_dmb st_dmh st_dmw
+ModuleWritesTransitory = banks dm0_addr dm0_wr dm1_addr dm1_wr dm2_addr dm2_wr dm3_addr dm3_wr dmb_rd dmh_rd dmw_rd ld0 ld1 ld2 ld3 st0 st1 st2 st3
+ModuleReads_process_result = banks dm0_rd dm1_rd dm2_rd dm3_rd
+ModuleWrites_process_result = banks dmb_rd dmh_rd dmw_rd
+ModuleReads_process_request = banks dm_addr dmb_wr dmh_wr dmw_wr ld_dmb ld_dmh ld_dmw st_dmb st_dmh st_dmw
+ModuleWrites_process_request = banks dm0_addr dm0_wr dm1_addr dm1_wr dm2_addr dm2_wr dm3_addr dm3_wr ld0 ld1 ld2 ld3 st0 st1 st2 st3
+nml_interface = banks DMb
+mem_interface = banks DM0 DM1 DM2 DM3
+ModuleLocalStorage = banks ld0_ff ld1_ff ld2_ff ld3_ff
+ModuleDbgAccess = banks dbg_access_DMb
+
+
+PDGTypes = uint1_t 
+
+NumberOfPdgModules = 3
+
+NumberOfPrimitveCFiles = 1
