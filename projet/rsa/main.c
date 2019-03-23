@@ -40,6 +40,8 @@ void set_bit_array(ARRAY_TYPE inout, unsigned int bit);
 
 unsigned int get_n(ARRAY_TYPE in)
 {
+  return ARRAY_SIZE*8;
+
   int n = ARRAY_SIZE*8 - 1;
   while(n >= 0 && !check_bit_array(in, n))
   {
