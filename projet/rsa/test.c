@@ -62,6 +62,30 @@ unsigned REDC2(unsigned x, unsigned y, unsigned n)
     return Montgomery2(a, 1, r, n);
 }
 
+unsigned ModularExponentiation(unsigned M, unsigned e, unsigned N)
+{
+    unsigned n = get_b(N);
+    unsigned r = get_r(N);
+    unsigned C = (r*r)%N;
+
+    // step 1
+    unsigned M_ = Montgomery2(M, C, r, N);
+    unsigned R = Montgomery2(C, 1, r, N);
+
+    // step 2
+    for(int i = 0; i < n; i++)
+    {
+        //2a
+        if(e>>i & 1) R = Montgomery2(R, M_, r, N);
+        //2b
+        M_ = Montgomery2(M_, M_, r, N);
+    }
+    // step 3
+    R = Montgomery2(R, 1, r, N);
+    // step 4
+    return R;
+}
+
 
 int main(int argc, char** argv)
 {
@@ -72,6 +96,9 @@ int main(int argc, char** argv)
     unsigned a = Montgomery(43, 9, 100, 97);
     unsigned b = Montgomery2(43, 9, 100, 97); // should be 32
     printf("test:%d, correct:%d\n", a, b);
+
+    unsigned c = ModularExponentiation(12, 2, 13);
+    printf("%d\n", c);
 
     return 0;
 
