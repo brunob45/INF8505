@@ -15,20 +15,12 @@ unsigned get_r(unsigned x)
     return 2<<(n);
 }
 
-unsigned montgomery_domain(unsigned x, unsigned r, unsigned n)
-{
-    if(r <= n) return -1;
-    unsigned temp = r-n;
-    unsigned ret = 0;
-    while(temp--)
-    {
-        ret = ret + x;
-        if(ret > n) ret = ret - n;
-    }
-    return ret;
-}
+// unsigned montgomery_domain(unsigned x, unsigned n)
+// {
+//     return  (x*b) % n;
+// }
 
-unsigned modular_inverse(unsigned x, unsigned n)
+unsigned modulo_inverse(unsigned x, unsigned n)
 {
     int result;
     for(result = 0; result < n; result++)
@@ -39,37 +31,52 @@ unsigned modular_inverse(unsigned x, unsigned n)
     return result;
 }
 
+unsigned Montgomery(unsigned x, unsigned y, unsigned R, unsigned p)
+{
+    unsigned a = 0;
+
+    for(int i = 0; i < 8; i++)
+    {
+        a = a + ((x&(1<<i)) * y);
+        a = a + ((a&1) * p);
+        a = a/2;
+    }
+
+    while(a > p) a = a-p;
+
+    return a;
+}
+
+unsigned Montgomery2(unsigned x, unsigned y, unsigned R, unsigned p)
+{
+    unsigned a = x * y;
+    printf("%d\n", a);
+    while(a % R != 0)
+    {
+        a += p;
+        printf("%d\n", a);
+    }
+    a /= R;
+    printf("%d\n", a);
+    return a;
+}
+
+
 int main(int argc, char** argv)
 {
-    unsigned x = 35;
     unsigned n = 97;
-    unsigned r = get_r(n);
-    unsigned r_ = modular_inverse(r, n);
-    printf("%d, %d\n", r%n, r_);
+    unsigned b = get_r(n);
+    unsigned r_ = (b*b)%n;
+
+    unsigned x, y, a, result, z;
+
+    x = Montgomery2(43, r_, b, n);
+    y = Montgomery2(56, r_, b, n);
+    a = Montgomery2(x, y, b, n);
+    
+    result = Montgomery2(a, 1, b, n);
+    printf("result:%d\n", result);
+
     return 0;
 
-    unsigned m = montgomery_domain(x, r, n);
-    unsigned z = montgomery_domain(x, modular_inverse(r, n), n);
-    printf("%d: %d: %d\n", r, m, z);
-    return 0;
-
-
-    // unsigned a = 2;
-    // unsigned b = 3;
-    // unsigned r = 256; // 2^k
-    // unsigned n = 11; // modulo
-    // unsigned k = 8; // bits
-    // unsigned S[k+1];
-    // unsigned q;
-
-    // unsigned A = ((a%n)*(r%n))%n;
-    // unsigned B = ((b%n)*(r%n))%n;
-
-    // S[0] = 0;
-    // for(int i = 0; i < k; i++)
-    // {
-    //     q = ((S[i]&1) + (A>>i & 1)*(B&1)) % 2;
-    //     S[i+1] = (S[i]+(A>>i & 1)*(B)+q*n)/2;
-    // }
-    // printf("%d", S[k]);
 }
