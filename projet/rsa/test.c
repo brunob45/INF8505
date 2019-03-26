@@ -20,7 +20,7 @@ unsigned get_r(unsigned x)
     return 1<<get_b(x);
 }
 
-unsigned Montgomery(unsigned A, unsigned B, unsigned n, unsigned N)
+unsigned ModularMultipliaction2(unsigned A, unsigned B, unsigned n, unsigned N)
 {
     // step 1
     unsigned R = 0;
@@ -40,7 +40,7 @@ unsigned Montgomery(unsigned A, unsigned B, unsigned n, unsigned N)
     return R;
 }
 
-unsigned Montgomery2(unsigned x, unsigned y, unsigned R, unsigned p)
+unsigned ModularMultipliaction(unsigned x, unsigned y, unsigned R, unsigned p)
 {
     unsigned a = x * y;
     while(a % R != 0)
@@ -56,14 +56,14 @@ unsigned REDC2(unsigned x, unsigned y, unsigned n)
     unsigned a;
 
     // transform
-    x = Montgomery2(x, r_, r, n);
-    y = Montgomery2(y, r_, r, n);
+    x = ModularMultipliaction(x, r_, r, n);
+    y = ModularMultipliaction(y, r_, r, n);
 
     // multiply
-    a = Montgomery2(x, y, r, n);
+    a = ModularMultipliaction(x, y, r, n);
     
     // transform back
-    return Montgomery2(a, 1, r, n);
+    return ModularMultipliaction(a, 1, r, n);
 }
 
 unsigned ModularExponentiation(unsigned M, unsigned e, unsigned N)
@@ -73,19 +73,19 @@ unsigned ModularExponentiation(unsigned M, unsigned e, unsigned N)
     unsigned C = (r*r)%N;
 
     // step 1
-    unsigned M_ = Montgomery2(M, C, r, N);
-    unsigned R = Montgomery2(C, 1, r, N);
+    unsigned M_ = ModularMultipliaction(M, C, r, N);
+    unsigned R = ModularMultipliaction(C, 1, r, N);
 
     // step 2
     for(int i = 0; i < n; i++)
     {
         //2a
-        if(e>>i & 1) R = Montgomery2(R, M_, r, N);
+        if(e>>i & 1) R = ModularMultipliaction(R, M_, r, N);
         //2b
-        M_ = Montgomery2(M_, M_, r, N);
+        M_ = ModularMultipliaction(M_, M_, r, N);
     }
     // step 3
-    R = Montgomery2(R, 1, r, N);
+    R = ModularMultipliaction(R, 1, r, N);
     // step 4
     return R;
 }
@@ -97,8 +97,8 @@ int main(int argc, char** argv)
     printf("result:%d\n", REDC2(43,56,97));
 
     // test new function
-    unsigned a = Montgomery(43, 9, 7, 97);
-    unsigned b = Montgomery2(43, 9, 1<<7, 97); // should be 25
+    unsigned a = ModularMultipliaction2(43, 9, 7, 97);
+    unsigned b = ModularMultipliaction(43, 9, 1<<7, 97); // should be 25
     printf("test:%d, correct:%d\n", a, b);
 
     // below works too!
