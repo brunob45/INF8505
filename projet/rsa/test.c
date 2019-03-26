@@ -50,32 +50,33 @@ unsigned Montgomery(unsigned x, unsigned y, unsigned R, unsigned p)
 unsigned Montgomery2(unsigned x, unsigned y, unsigned R, unsigned p)
 {
     unsigned a = x * y;
-    printf("%d\n", a);
     while(a % R != 0)
-    {
         a += p;
-        printf("%d\n", a);
-    }
     a /= R;
-    printf("%d\n", a);
     return a;
+}
+
+unsigned REDC2(unsigned x, unsigned y, unsigned n)
+{
+    unsigned r = get_r(n);
+    unsigned r_ = (r*r)%n;
+    unsigned a;
+
+    // transform
+    x = Montgomery2(x, r_, r, n);
+    y = Montgomery2(y, r_, r, n);
+
+    // multiply
+    a = Montgomery2(x, y, r, n);
+    
+    // transform back
+    return Montgomery2(a, 1, r, n);
 }
 
 
 int main(int argc, char** argv)
 {
-    unsigned n = 97;
-    unsigned b = get_r(n);
-    unsigned r_ = (b*b)%n;
-
-    unsigned x, y, a, result, z;
-
-    x = Montgomery2(43, r_, b, n);
-    y = Montgomery2(56, r_, b, n);
-    a = Montgomery2(x, y, b, n);
-    
-    result = Montgomery2(a, 1, b, n);
-    printf("result:%d\n", result);
+    printf("result:%d\n", REDC2(43,56,97));
 
     return 0;
 
