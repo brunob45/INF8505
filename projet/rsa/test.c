@@ -5,30 +5,19 @@ unsigned BIT_TEST(unsigned x, unsigned n)
     return (x >> n) & 0x01;
 }
 
-unsigned get_r(unsigned x)
+unsigned get_b(unsigned x)
 {
     int n = sizeof(unsigned)*8 - 1;
     while(n >= 0 && !BIT_TEST(x, n))
     {
         n--;
     }
-    return 2<<(n);
+    return n+1;
 }
 
-// unsigned montgomery_domain(unsigned x, unsigned n)
-// {
-//     return  (x*b) % n;
-// }
-
-unsigned modulo_inverse(unsigned x, unsigned n)
+unsigned get_r(unsigned x)
 {
-    int result;
-    for(result = 0; result < n; result++)
-    {
-        if( (x *result) % n == 1)
-            break;
-    }
-    return result;
+    return 1<<get_b(x);
 }
 
 unsigned Montgomery(unsigned x, unsigned y, unsigned R, unsigned p)
