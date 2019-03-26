@@ -65,7 +65,13 @@ unsigned REDC2(unsigned x, unsigned y, unsigned n)
 
 int main(int argc, char** argv)
 {
+    // this works
     printf("result:%d\n", REDC2(43,56,97));
+
+    // test new function
+    unsigned a = Montgomery(43, 9, 100, 97);
+    unsigned b = Montgomery2(43, 9, 100, 97); // should be 32
+    printf("test:%d, correct:%d\n", a, b);
 
     return 0;
 
