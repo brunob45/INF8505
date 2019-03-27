@@ -2,7 +2,7 @@
 
 #define ARRAY_TYPE unsigned*
 
-unsigned n;
+unsigned n, base = 16;
 unsigned N[1], R[1], C[1], ONE[1], A[1], B[1], Z[1];
 
 unsigned BIT_TEST(ARRAY_TYPE x, int n)
@@ -34,12 +34,12 @@ void REDC()
 
 unsigned ModularMultiplication2(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
 {
-    printf("(%d x %d) %% %d\n\n", *in1, *in2, *N);
+    printf("(%d x %d) %% %d\n", *in1, *in2, *N);
     // step 1
-    unsigned work = 0, a, b, base = 10;
+    unsigned work = 0, a, b;
     unsigned l = 1;
     // step2
-    for(int i = 0; (*in1/l)>0; i++)
+    for(int i = 0; i<n-1; i++)
     {
         a = (*in1/l)%base;
         b = *in2;
@@ -55,12 +55,14 @@ unsigned ModularMultiplication2(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
 
         printf("%d\n%d / %d = ", work, work, base);
         work = work/base;
-        printf("%d\n\n", work);
+        printf("%d\n-----\n", work);
         l *= base;
     }
 
     // step 3
-    if(work > *N) work = work-*N;
+    printf("%d %% %d = ", work, *N);
+    // if(work > *N) work = work-*N;
+    printf("%d\n\n", work);
 
     // step 4
     *out = work;
@@ -107,8 +109,13 @@ int main(int argc, char** argv)
 
     *ONE = 1;
     *N = 97;
-    n = 8;
-    *R = 100;//1<<(n+2);
+    n = 1;
+    *R = 1;
+    while(*R < *N)
+    {
+        n = n+1;
+        *R *= base;
+    }
     *C = (*R**R)%*N;
 
     *A = 43; *B = 56;
