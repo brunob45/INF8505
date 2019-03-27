@@ -2,7 +2,7 @@
 
 #define ARRAY_TYPE unsigned*
 
-unsigned n, base = 10;
+unsigned n, base = 2;
 unsigned N[1], R[1], C[1], ONE[1], A[1], B[1], Z[1];
 
 unsigned BIT_TEST(ARRAY_TYPE x, int n)
@@ -104,39 +104,15 @@ int main(int argc, char** argv)
         *R *= base;
     }
     *C = (*R**R)%*N;
+    printf("N=%x\n", *N);
+    printf("R=%x\n", *R);
+    printf("C=%x\n", *C);
 
     *A = 65; *B = 17;
     ModularExponentiation(A, B);
-    printf("%d\n", *Z);
+    printf("%x\n", *Z);
     *A = 2790; *B = 413;
     ModularExponentiation(A, B);
-    printf("%d\n", *Z);
+    printf("%x\n", *Z);
     return 0;
-
-    // this works
-    // *A = i; *B = j;
-    // REDC();
-    // x = *Z;
-    // *A = i; *B = j;
-    // REDC2();
-    // y = *Z;
-    // printf("correct:%d, test:%d\n", x, y);
-
-    
-    // below works too!
-    // *N = 97;
-    // for(i = 1; i < 35; i++)
-    // {
-    //     x = i;
-    //     for(j = 1; j < 12; j++)
-    //     {
-    //         *A = i; *B = j;
-    //         ModularExponentiation(A, B);
-    //         if(*Z != x) printf("ModularExponentiation failed i:%d, j:%d, expected:%d, result:%d\n", i, j, x, *Z);
-    //         x = (x*i) % *N;
-    //     }
-    // }
-
-    return 0;
-
 }
