@@ -1,109 +1,106 @@
 #include <stdio.h>
 
-unsigned BIT_TEST(unsigned x, unsigned n)
+#define ARRAY_TYPE unsigned*
+
+unsigned n;
+unsigned N[1], R[1], C[1], ONE[1];
+
+unsigned BIT_TEST(ARRAY_TYPE x, int n)
 {
-    return (x >> n) & 0x01;
+    return (*x >> n) & 0x01;
 }
 
-unsigned get_b(unsigned x)
-{
-    int n = sizeof(unsigned)*8 - 1;
-    while(n >= 0 && !BIT_TEST(x, n))
-    {
-        n--;
-    }
-    return n+1;
-}
-
-unsigned get_r(unsigned x)
-{
-    return 1<<get_b(x);
-}
-
-unsigned ModularMultipliaction2(unsigned A, unsigned B, unsigned n, unsigned N)
+unsigned ModularMultiplication2(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
 {
     // step 1
-    unsigned R = 0;
+    unsigned work = 0;
 
     // step2
     for(int i = 0; i <= n; i++)
     {
-        R = R + ((A&(1<<i)) * B);
-        R = R + ((R&(1<<0)) * N);
-        R = R/2;
+        work = work + ((*in1&(1<<i)) * *in2);
+        work = work + ((work&(1<<0)) * *N);
+        work = work/2;
     }
 
     // step 3
-    while(R > N) R = R-N;
+    while(work > *N) work = work-*N;
 
     // step 4
-    return R;
+    *out = work;
 }
 
-unsigned ModularMultipliaction(unsigned x, unsigned y, unsigned R, unsigned p)
+unsigned ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
 {
-    unsigned a = x * y;
-    while(a % R != 0)
-        a += p;
-    a /= R;
-    return a;
+    *out = *in1 * *in2;
+    while(*out % *R != 0)
+        *out += *N;
+    *out /= *R;
+    // return a;
 }
 
-unsigned REDC2(unsigned x, unsigned y, unsigned n)
+void REDC2(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
 {
-    unsigned r = get_r(n);
-    unsigned r_ = (r*r)%n;
-    unsigned a;
-
     // transform
-    x = ModularMultipliaction(x, r_, r, n);
-    y = ModularMultipliaction(y, r_, r, n);
+    ModularMultiplication(in1, C, in1);
+    ModularMultiplication(in2, C, in2);
 
     // multiply
-    a = ModularMultipliaction(x, y, r, n);
+    ModularMultiplication(in1, in2, out);
     
     // transform back
-    return ModularMultipliaction(a, 1, r, n);
+    ModularMultiplication(out, ONE, out);
 }
 
-unsigned ModularExponentiation(unsigned M, unsigned e, unsigned N)
+unsigned ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE out)
 {
-    unsigned n = get_b(N);
-    unsigned r = get_r(N);
-    unsigned C = (r*r)%N;
-
     // step 1
-    unsigned M_ = ModularMultipliaction(M, C, r, N);
-    unsigned R = ModularMultipliaction(C, 1, r, N);
+    ModularMultiplication(m, C, m);
+    ModularMultiplication(C, ONE, out);
 
     // step 2
     for(int i = 0; i < n; i++)
     {
         //2a
-        if(e>>i & 1) R = ModularMultipliaction(R, M_, r, N);
+        if(*e>>i & 1) ModularMultiplication(out, m, out);
         //2b
-        M_ = ModularMultipliaction(M_, M_, r, N);
+        ModularMultiplication(m, m, m);
     }
     // step 3
-    R = ModularMultipliaction(R, 1, r, N);
+    ModularMultiplication(out, ONE, out);
     // step 4
-    return R;
+    // return r;
 }
 
 
 int main(int argc, char** argv)
 {
+    unsigned a[1], b[1], c[1], x[1], y[1];
+
+    *ONE = 1;
+    *N = 97;
+    n = 8;
+    *R = 1<<n;
+    *C = (*R**R)%*N;
+
     // this works
-    printf("result:%d\n", REDC2(43,56,97));
+    *x = 43; *y = 56;
+    REDC2(x,y,c);
+    printf("Modular Multiplication:%d (should be 80)\n",*c);
 
     // test new function
-    unsigned a = ModularMultipliaction2(43, 9, 7, 97);
-    unsigned b = ModularMultipliaction(43, 9, 1<<7, 97); // should be 25
-    printf("test:%d, correct:%d\n", a, b);
+    *x = 43; *y = 9;
+    ModularMultiplication2(x, y, a);
+    ModularMultiplication(x, y, b); // should be 25
+    printf("test:%d, correct:%d\n", *a, *b);
 
+    
     // below works too!
-    unsigned c = ModularExponentiation(12, 2, 13);
-    printf("%d\n", c);
+    *N = 13;
+    *x = 12;
+    *y = 2;
+    ModularExponentiation(x, y, c);
+    printf("Modular Exponentiation:%d (should be 1)\n", *c);
 
     return 0;
 
