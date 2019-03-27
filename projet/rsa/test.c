@@ -19,26 +19,6 @@ unsigned ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
     // return a;
 }
 
-unsigned ModularMultiplication2(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
-{
-    // step 1
-    unsigned work = 0;
-
-    // step2
-    for(int i = 0; i <= n; i++)
-    {
-        work = work + ((*in1&(1<<i)) * *in2);
-        work = work + ((work&(1<<0)) * *N);
-        work = work/2;
-    }
-
-    // step 3
-    if(work > *N) work = work-*N;
-
-    // step 4
-    *out = work;
-}
-
 void REDC()
 {
     // transform
@@ -52,17 +32,51 @@ void REDC()
     ModularMultiplication(Z, ONE, Z);
 }
 
+unsigned ModularMultiplication2(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
+{
+    printf("(%d x %d) %% %d\n\n", *in1, *in2, *N);
+    // step 1
+    unsigned work = 0, a, b, base = 10;
+    unsigned l = 1;
+    // step2
+    for(int i = 0; (*in1/l)>0; i++)
+    {
+        a = (*in1/l)%base;
+        b = *in2;
+        printf("%d + %d x %d = ", work, a, b);
+        work = work + (a * b);
+
+        a = 0;
+        while((work + (a* *N)) % base != 0)
+            a += 1;
+        b = *N;
+        printf("%d\n%d + %d x %d = ", work, work, a, b);
+        work = work + (a * b);
+
+        printf("%d\n%d / %d = ", work, work, base);
+        work = work/base;
+        printf("%d\n\n", work);
+        l *= base;
+    }
+
+    // step 3
+    if(work > *N) work = work-*N;
+
+    // step 4
+    *out = work;
+}
+
 void REDC2()
 {
     // transform
-    ModularMultiplication(A, C, B);
-    ModularMultiplication(B, C, B);
+    ModularMultiplication2(A, C, A);
+    ModularMultiplication2(B, C, B);
 
     // multiply
     ModularMultiplication2(A, B, Z);
     
     // transform back
-    ModularMultiplication(Z, C, Z);
+    ModularMultiplication2(Z, ONE, Z);
 }
 
 unsigned ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e)
@@ -93,9 +107,15 @@ int main(int argc, char** argv)
 
     *ONE = 1;
     *N = 97;
-    n = 7;
-    *R = 1<<n;
+    n = 8;
+    *R = 100;//1<<(n+2);
     *C = (*R**R)%*N;
+
+    *A = 43; *B = 56;
+    REDC2();
+    // ModularMultiplication2(A, B, Z);
+    printf("%d\n", *Z);
+    return 0;
 
     // this works
     *A = i; *B = j;
