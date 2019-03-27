@@ -3,11 +3,20 @@
 #define ARRAY_TYPE unsigned*
 
 unsigned n;
-unsigned N[1], R[1], C[1], ONE[1];
+unsigned N[1], R[1], C[1], ONE[1], A[1], B[1], Z[1];
 
 unsigned BIT_TEST(ARRAY_TYPE x, int n)
 {
     return (*x >> n) & 0x01;
+}
+
+unsigned ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
+{
+    *out = *in1 * *in2;
+    while(*out % *R != 0)
+        *out += *N;
+    *out /= *R;
+    // return a;
 }
 
 unsigned ModularMultiplication2(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
@@ -24,50 +33,54 @@ unsigned ModularMultiplication2(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
     }
 
     // step 3
-    while(work > *N) work = work-*N;
+    if(work > *N) work = work-*N;
 
     // step 4
     *out = work;
 }
 
-unsigned ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
-{
-    *out = *in1 * *in2;
-    while(*out % *R != 0)
-        *out += *N;
-    *out /= *R;
-    // return a;
-}
-
-void REDC2(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
+void REDC()
 {
     // transform
-    ModularMultiplication(in1, C, in1);
-    ModularMultiplication(in2, C, in2);
+    ModularMultiplication(A, C, A);
+    ModularMultiplication(B, C, B);
 
     // multiply
-    ModularMultiplication(in1, in2, out);
+    ModularMultiplication(A, B, Z);
     
     // transform back
-    ModularMultiplication(out, ONE, out);
+    ModularMultiplication(Z, ONE, Z);
 }
 
-unsigned ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE out)
+void REDC2()
+{
+    // transform
+    ModularMultiplication(A, C, B);
+    ModularMultiplication(B, C, B);
+
+    // multiply
+    ModularMultiplication2(A, B, Z);
+    
+    // transform back
+    ModularMultiplication(Z, C, Z);
+}
+
+unsigned ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e)
 {
     // step 1
     ModularMultiplication(m, C, m);
-    ModularMultiplication(C, ONE, out);
+    ModularMultiplication(C, ONE, Z);
 
     // step 2
     for(int i = 0; i < n; i++)
     {
         //2a
-        if(*e>>i & 1) ModularMultiplication(out, m, out);
+        if(*e>>i & 1) ModularMultiplication(Z, m, Z);
         //2b
         ModularMultiplication(m, m, m);
     }
     // step 3
-    ModularMultiplication(out, ONE, out);
+    ModularMultiplication(Z, ONE, Z);
     // step 4
     // return r;
 }
@@ -75,32 +88,38 @@ unsigned ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE out)
 
 int main(int argc, char** argv)
 {
-    unsigned a[1], b[1], c[1], x[1], y[1];
+    unsigned i = 13, j = 112;
+    unsigned x, y;
 
     *ONE = 1;
     *N = 97;
-    n = 8;
+    n = 7;
     *R = 1<<n;
     *C = (*R**R)%*N;
 
     // this works
-    *x = 43; *y = 56;
-    REDC2(x,y,c);
-    printf("Modular Multiplication:%d (should be 80)\n",*c);
-
-    // test new function
-    *x = 43; *y = 9;
-    ModularMultiplication2(x, y, a);
-    ModularMultiplication(x, y, b); // should be 25
-    printf("test:%d, correct:%d\n", *a, *b);
+    *A = i; *B = j;
+    REDC();
+    x = *Z;
+    *A = i; *B = j;
+    REDC2();
+    y = *Z;
+    printf("correct:%d, test:%d\n", x, y);
 
     
     // below works too!
-    *N = 13;
-    *x = 12;
-    *y = 2;
-    ModularExponentiation(x, y, c);
-    printf("Modular Exponentiation:%d (should be 1)\n", *c);
+    *N = 97;
+    for(i = 1; i < 35; i++)
+    {
+        x = i;
+        for(j = 1; j < 12; j++)
+        {
+            *A = i; *B = j;
+            ModularExponentiation(A, B);
+            if(*Z != x) printf("ModularExponentiation failed i:%d, j:%d, expected:%d, result:%d\n", i, j, x, *Z);
+            x = (x*i) % *N;
+        }
+    }
 
     return 0;
 
