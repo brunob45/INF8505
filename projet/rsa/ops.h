@@ -87,7 +87,7 @@ void array_set(ARRAY_TYPE inout, uint value)
 {
     int i, j;
     array_reset(inout);
-    for(i = 1; i <= 2; i++)
+    for(i = 1; i <= 4; i++)
     {
         j = ARRAY_SIZE-i;
         inout[j] = value >> (8 * (i-1));
@@ -259,7 +259,6 @@ int get_n(ARRAY_TYPE in)
     int i;
     for(i = 8*ARRAY_SIZE-1; i >= 0; i--)
     {
-        printf("%d>%d\n", i, array_bit_test(in, i));
         if(array_bit_test(in, i))
         {
             return i+1;

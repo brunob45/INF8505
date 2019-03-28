@@ -3,7 +3,7 @@
 #define byte unsigned char
 #define uint unsigned int
 
-#define ARRAY_SIZE (1024/8+2)
+#define ARRAY_SIZE (1024/8+1)
 #define ARRAY_TYPE unsigned char*
 
 #include "ops.h"
@@ -14,17 +14,9 @@ byte N[ARRAY_SIZE], R[ARRAY_SIZE], A[ARRAY_SIZE], B[ARRAY_SIZE], Z[ARRAY_SIZE], 
 int main()
 {
     uint n;
-
     n = set_constants(modulus, R, C);
+    array_set(A, 0x123456);
 
-    array_set(A, 65);
-    
-    printf("modulus=\n");
-    array_print(modulus);
-    printf("privateExponent=\n");
-    array_print(privateExponent);
-    printf("publicExponent=\n");
-    array_print(publicExponent);
     printf("A=\n");
     array_print(A);
 
