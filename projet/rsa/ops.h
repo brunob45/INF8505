@@ -5,13 +5,11 @@
 #define uint unsigned int
 
 #ifndef ARRAY_SIZE
-#warning "ARRAY_SIZE not defined"
-#define ARRAY_SIZE 4
+#error "ARRAY_SIZE not defined"
 #endif
 
 #ifndef ARRAY_TYPE
-#warning "ARRAY_TYPE not defined"
-#define ARRAY_TYPE byte*
+#error "ARRAY_TYPE not defined"
 #endif
 
 void array_add(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
@@ -89,7 +87,7 @@ void array_set(ARRAY_TYPE inout, uint value)
 {
     int i, j;
     array_reset(inout);
-    for(i = 1; i <= 4; i++)
+    for(i = 1; i <= 2; i++)
     {
         j = ARRAY_SIZE-i;
         inout[j] = value >> (8 * (i-1));
@@ -256,9 +254,24 @@ void ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE mod, uint n, A
     ModularMultiplication(out, ONE, mod, n, out);
 }
 
+int get_n(ARRAY_TYPE in)
+{
+    int i;
+    for(i = 8*ARRAY_SIZE-1; i >= 0; i--)
+    {
+        printf("%d>%d\n", i, array_bit_test(in, i));
+        if(array_bit_test(in, i))
+        {
+            return i+1;
+        }
+    }
+    return 0;
+}
+
 uint set_constants(ARRAY_TYPE mod, ARRAY_TYPE R, ARRAY_TYPE C)
 {
-    uint n = 8*(ARRAY_SIZE-1);
+    uint n = get_n(mod)+2;
+    printf("n=%d\n", n);
     array_bit_set(R, n);
     array_modulus(R, mod, C);
     array_mulmod(C, C, mod, C);

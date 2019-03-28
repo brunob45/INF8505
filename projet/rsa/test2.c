@@ -4,7 +4,7 @@
 #define uint unsigned int
 
 #define ARRAY_SIZE 5
-#define ARRAY_TYPE byte*
+#define ARRAY_TYPE unsigned char*
 
 #include "ops.h"
 
