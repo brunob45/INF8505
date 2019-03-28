@@ -98,18 +98,18 @@ int main()
         array_print(C);
     }
 
-    // greater
-    printf("greater... ");
+    // greater or equal
+    printf("greater or equal... ");
     passed = 1;
     for(a = 1; a < 0xfffffff && passed; a=4*a+1)
     {
         for(b = 1; b <= 0xfffffff && passed; b=9*b-1)
         {
-            c = (a > b);
+            c = (a >= b);
 
             array_set(A, a);
             array_set(B, b);
-            array_set(C, array_greater(A, B));
+            array_set(C, array_geq(A, B));
             passed = equal(C, c);
         }
     }
@@ -119,32 +119,7 @@ int main()
     }
     else
     {
-        printf("failed: %x > %x = %x. Got:\n", a, b, c);
-        array_print(C);
-    }
-
-    // equal
-    printf("equal... ");
-    passed = 1;
-    for(a = 1; a < 0xfffffff && passed; a=4*a+1)
-    {
-        for(b = 1; b < 0xfffffff && passed; b=9*b-1)
-        {
-            c = (a == b);
-
-            array_set(A, a);
-            array_set(B, b);
-            array_set(C, array_equal(A, B));
-            passed = equal(C, c);
-        }
-    }
-    if(equal(C, c))
-    {
-        printf("passed\n");
-    }
-    else
-    {
-        printf("failed: %x == %x = %x. Got:\n", a, b, c);
+        printf("failed: %x >= %x = %x. Got:\n", a, b, c);
         array_print(C);
     }
 
