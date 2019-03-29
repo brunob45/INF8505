@@ -7,8 +7,7 @@ unsigned char ONE[ARRAY_SIZE];
 #include "keys/keys.h"
 #include "ops.h"
 
-byte N[ARRAY_SIZE], R[ARRAY_SIZE], C[ARRAY_SIZE];
-
+byte R[ARRAY_SIZE], C[ARRAY_SIZE];
 
 int get_n(ARRAY_TYPE in)
 {
