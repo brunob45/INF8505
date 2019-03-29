@@ -1,7 +1,7 @@
 #ifndef OPS_H
 #define OPS_H
 
-#include "constants.h"
+// #include "constants.h"
 
 #ifndef ARRAY_SIZE
 #error "ARRAY_SIZE not defined"
@@ -17,8 +17,8 @@ typedef unsigned int uint;
 void array_add(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
 void array_sub(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
 void array_div2(ARRAY_TYPE in, ARRAY_TYPE out);
-void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE out);
-void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
+void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE mod, ARRAY_TYPE out);
+void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, ARRAY_TYPE out);
 
 void array_reset(ARRAY_TYPE inout);
 void array_set(ARRAY_TYPE inout, uint value);
@@ -174,38 +174,36 @@ void array_copy(ARRAY_TYPE in, ARRAY_TYPE out)
     }
 }
 
-void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE out)
+void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE mod, ARRAY_TYPE out)
 {
     array_copy(in1, out);
-    while(array_geq(out, modulus))
+    while(array_geq(out, mod))
     {
-        array_sub(out, modulus, out);
+        array_sub(out, mod, out);
     }
 }
 
-void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE res)
+void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, ARRAY_TYPE res)
 {
-
-
     array_copy(in1, WORK1);
     array_copy(in2, WORK2);
 
     array_reset(res);
-    array_modulus(WORK1, WORK1);
+    array_modulus(WORK1, mod, WORK1);
     while(array_notzero(WORK2))
     {
         if(array_bit_test(WORK2, 0))
         {
             array_add(res, WORK1, res);
-            array_modulus(res, res);
+            array_modulus(res, mod, res);
         }
         array_add(WORK1, WORK1, WORK1);
-        array_modulus(WORK1, WORK1);
+        array_modulus(WORK1, mod, WORK1);
         array_div2(WORK2, WORK2);
     }
 }
 
-void ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
+void ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, uint n, ARRAY_TYPE out)
 {
     unsigned int i;
 
@@ -221,42 +219,30 @@ void ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
         }
         if(array_bit_test(out, 0))
         {
-            array_add(out, modulus, out);
+            array_add(out, mod, out);
         }
         array_div2(out, out);
     }
 }
 
-void ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE out)
+void ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE mod, uint n, ARRAY_TYPE c, ARRAY_TYPE out)
 {
     unsigned int i;
 
-    ModularMultiplication(m, C, m);
-    ModularMultiplication(C, ONE, out);
+    ModularMultiplication(m, c, mod, n, m);
+    ModularMultiplication(c, ONE, mod, n, out);
 
     // step 2
     for(i = 0; i < n; i++)
     {
         if(array_bit_test(e, i))
         {
-            ModularMultiplication(out, m, out);
+            ModularMultiplication(out, m, mod, n, out);
         }
-        ModularMultiplication(m, m, m);
+        ModularMultiplication(m, m, mod, n, m);
     }
-    ModularMultiplication(out, ONE, out);
+    ModularMultiplication(out, ONE, mod, n, out);
 }
 
-int get_n(ARRAY_TYPE in)
-{
-    int i;
-    for(i = 8*ARRAY_SIZE-1; i >= 0; i--)
-    {
-        if(array_bit_test(in, i))
-        {
-            return i+1;
-        }
-    }
-    return 0;
-}
 
 #endif // OPS_H

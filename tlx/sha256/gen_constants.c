@@ -2,17 +2,34 @@
 
 #define ARRAY_SIZE (1024/8+1)
 
+unsigned char ONE[ARRAY_SIZE];
+
+#include "keys/keys.h"
 #include "ops.h"
 
-byte N[ARRAY_SIZE], R[ARRAY_SIZE], C[ARRAY_SIZE], ONE[ARRAY_SIZE];
+byte N[ARRAY_SIZE], R[ARRAY_SIZE], C[ARRAY_SIZE];
 
-uint set_constants()
+
+int get_n(ARRAY_TYPE in)
+{
+    int i;
+    for(i = 8*ARRAY_SIZE-1; i >= 0; i--)
+    {
+        if(array_bit_test(in, i))
+        {
+            return i+1;
+        }
+    }
+    return 0;
+}
+
+uint set_constants(ARRAY_TYPE mod)
 {
     uint n = get_n(modulus)+2;
     printf("unsigned int n=%d;\n", n);
     array_bit_set(R, n);
-    array_modulus(R, C);
-    array_mulmod(C, C, C);
+    array_modulus(R, modulus, C);
+    array_mulmod(C, C, modulus, C);
     array_set(ONE, 1);
 
     printf("unsigned char modulus[] = {\n");
@@ -33,7 +50,7 @@ uint set_constants()
 int main()
 {
     uint n;
-    n = set_constants();
+    n = set_constants(modulus);
     printf("unsigned char publicExponent[] = {\n");
     array_print(publicExponent);
     printf("};\n");
