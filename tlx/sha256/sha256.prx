@@ -1,0 +1,5 @@
+<project name="Project" processor="tlx" lib="../lib">
+    <file type="c" name="sha256.c" path=""/>
+    <option id="project.name" value="sha256"/>
+    <option id="project.type" value="exe"/>
+</project>
