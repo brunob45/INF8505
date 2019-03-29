@@ -1,8 +1,6 @@
 #ifndef OPS_H
 #define OPS_H
 
-// #include "constants.h"
-
 #ifndef ARRAY_SIZE
 #error "ARRAY_SIZE not defined"
 #endif
@@ -15,21 +13,23 @@ typedef unsigned char byte;
 typedef unsigned int uint;
 
 void array_add(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
-void array_sub(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
 void array_div2(ARRAY_TYPE in, ARRAY_TYPE out);
-void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE mod, ARRAY_TYPE out);
-void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, ARRAY_TYPE out);
+byte array_bit_test(ARRAY_TYPE in, uint bit);
 
 void array_reset(ARRAY_TYPE inout);
-void array_set(ARRAY_TYPE inout, uint value);
 void array_copy(ARRAY_TYPE in, ARRAY_TYPE out);
 
-byte array_bit_test(ARRAY_TYPE in, uint bit);
+void ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, uint n, ARRAY_TYPE out);
+void ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE mod, uint n, ARRAY_TYPE c, ARRAY_TYPE out);
+
+// below are only used to generate constants or testbench
+void array_sub(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
+void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE mod, ARRAY_TYPE out);
+void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, ARRAY_TYPE out);
+void array_set(ARRAY_TYPE inout, uint value);
 void array_bit_set(ARRAY_TYPE inout, uint bit);
-
-byte array_geq(ARRAY_TYPE in1, ARRAY_TYPE in2);
 byte array_notzero(ARRAY_TYPE in1);
-
+byte array_geq(ARRAY_TYPE in1, ARRAY_TYPE in2);
 void array_print(ARRAY_TYPE in);
 
 byte WORK1[ARRAY_SIZE], WORK2[ARRAY_SIZE];
@@ -209,7 +209,7 @@ void ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, uint 
 
     array_copy(in1, WORK1);
     array_copy(in2, WORK2);
-    array_set(out, 0);
+    array_reset(out);
 
     for(i = 0; i<n; i++)
     {
