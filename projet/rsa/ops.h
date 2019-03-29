@@ -17,6 +17,7 @@
 void array_add(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
 void array_sub(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
 void array_div2(ARRAY_TYPE in, ARRAY_TYPE out);
+void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE mod, ARRAY_TYPE out);
 void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, ARRAY_TYPE out);
 
 void array_reset(ARRAY_TYPE inout);
@@ -179,7 +180,7 @@ void array_copy(ARRAY_TYPE in, ARRAY_TYPE out)
     }
 }
 
-void array_modulo(ARRAY_TYPE in1, ARRAY_TYPE mod, ARRAY_TYPE out)
+void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE mod, ARRAY_TYPE out)
 {
     array_copy(in1, out);
     while(array_geq(out, mod))
@@ -198,16 +199,16 @@ void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, ARRAY_TYPE res
     array_reset(res);
     array_reset(ZERO);
 
-    array_modulo(a, mod, a);
+    array_modulus(a, mod, a);
     while(!array_equal(b, ZERO))
     {
         if(array_bit_test(b, 0))
         {
             array_add(res, a, res);
-            array_modulo(res, mod, res);
+            array_modulus(res, mod, res);
         }
         array_add(a, a, a);
-        array_modulo(a, mod, a);
+        array_modulus(a, mod, a);
         array_div2(b, b);
     }
 }
