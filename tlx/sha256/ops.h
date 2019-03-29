@@ -1,11 +1,13 @@
 #ifndef OPS_H
 #define OPS_H
 
+#include "constants.h"
+
 #ifndef ARRAY_SIZE
 #error "ARRAY_SIZE not defined"
 #endif
 
-#define I_AM_SPECIAL
+// #define I_AM_SPECIAL
 
 
 typedef unsigned char* ARRAY_TYPE;
@@ -15,8 +17,8 @@ typedef unsigned int uint;
 void array_add(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
 void array_sub(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
 void array_div2(ARRAY_TYPE in, ARRAY_TYPE out);
-void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE mod, ARRAY_TYPE out);
-void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, ARRAY_TYPE out);
+void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE out);
+void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out);
 
 void array_reset(ARRAY_TYPE inout);
 void array_set(ARRAY_TYPE inout, uint value);
@@ -30,7 +32,7 @@ byte array_notzero(ARRAY_TYPE in1);
 
 void array_print(ARRAY_TYPE in);
 
-byte ONE[ARRAY_SIZE], WORK1[ARRAY_SIZE], WORK2[ARRAY_SIZE], a[ARRAY_SIZE], b[ARRAY_SIZE];
+byte WORK1[ARRAY_SIZE], WORK2[ARRAY_SIZE];
 
 void array_add(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
 {
@@ -139,9 +141,14 @@ byte array_notzero(ARRAY_TYPE in1)
 void array_print(ARRAY_TYPE in)
 {
     int i;
+    printf("  ");
     for(i = 0; i < ARRAY_SIZE; i++)
     {
-        printf("%x\t", in[i]);
+        printf("0x%x, ", in[i]);
+        if(i % 16 == 15)
+        {
+            printf("\n  ");
+        }
     }
     printf("\n");
 }
@@ -167,38 +174,38 @@ void array_copy(ARRAY_TYPE in, ARRAY_TYPE out)
     }
 }
 
-void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE mod, ARRAY_TYPE out)
+void array_modulus(ARRAY_TYPE in1, ARRAY_TYPE out)
 {
     array_copy(in1, out);
-    while(array_geq(out, mod))
+    while(array_geq(out, modulus))
     {
-        array_sub(out, mod, out);
+        array_sub(out, modulus, out);
     }
 }
 
-void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, ARRAY_TYPE res)
+void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE res)
 {
 
 
-    array_copy(in1, a);
-    array_copy(in2, b);
+    array_copy(in1, WORK1);
+    array_copy(in2, WORK2);
 
     array_reset(res);
-    array_modulus(a, mod, a);
-    while(array_notzero(b))
+    array_modulus(WORK1, WORK1);
+    while(array_notzero(WORK2))
     {
-        if(array_bit_test(b, 0))
+        if(array_bit_test(WORK2, 0))
         {
-            array_add(res, a, res);
-            array_modulus(res, mod, res);
+            array_add(res, WORK1, res);
+            array_modulus(res, res);
         }
-        array_add(a, a, a);
-        array_modulus(a, mod, a);
-        array_div2(b, b);
+        array_add(WORK1, WORK1, WORK1);
+        array_modulus(WORK1, WORK1);
+        array_div2(WORK2, WORK2);
     }
 }
 
-void ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, uint n, ARRAY_TYPE out)
+void ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE out)
 {
     unsigned int i;
 
@@ -214,31 +221,29 @@ void ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, uint 
         }
         if(array_bit_test(out, 0))
         {
-            array_add(out, mod, out);
+            array_add(out, modulus, out);
         }
         array_div2(out, out);
     }
 }
 
-void ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE mod, uint n, ARRAY_TYPE C, ARRAY_TYPE out)
+void ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE out)
 {
     unsigned int i;
 
-    array_set(ONE, 1);
-
-    ModularMultiplication(m, C, mod, n, m);
-    ModularMultiplication(C, ONE, mod, n, out);
+    ModularMultiplication(m, C, m);
+    ModularMultiplication(C, ONE, out);
 
     // step 2
     for(i = 0; i < n; i++)
     {
         if(array_bit_test(e, i))
         {
-            ModularMultiplication(out, m, mod, n, out);
+            ModularMultiplication(out, m, out);
         }
-        ModularMultiplication(m, m, mod, n, m);
+        ModularMultiplication(m, m, m);
     }
-    ModularMultiplication(out, ONE, mod, n, out);
+    ModularMultiplication(out, ONE, out);
 }
 
 int get_n(ARRAY_TYPE in)
@@ -253,24 +258,5 @@ int get_n(ARRAY_TYPE in)
     }
     return 0;
 }
-
-uint set_constants(ARRAY_TYPE mod, ARRAY_TYPE R, ARRAY_TYPE C)
-{
-    uint n = get_n(mod)+2;
-    printf("n=%d\n", n);
-    array_bit_set(R, n);
-    array_modulus(R, mod, C);
-    array_mulmod(C, C, mod, C);
-
-    printf("N=");
-    array_print(mod);
-    printf("R=");
-    array_print(R);
-    printf("C=");
-    array_print(C);
-
-    return n;
-}
-
 
 #endif // OPS_H
