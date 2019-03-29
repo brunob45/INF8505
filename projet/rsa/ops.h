@@ -213,4 +213,65 @@ void array_mulmod(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, ARRAY_TYPE res
     }
 }
 
+void ModularMultiplication(ARRAY_TYPE in1, ARRAY_TYPE in2, ARRAY_TYPE mod, uint n, ARRAY_TYPE out)
+{
+    int i;
+    byte WORK1[ARRAY_SIZE], WORK2[ARRAY_SIZE];
+
+    array_copy(in1, WORK1);
+    array_copy(in2, WORK2);
+    array_set(out, 0);
+
+    for(i = 0; i<n; i++)
+    {
+        if(array_bit_test(WORK1, i))
+        {
+            array_add(out, WORK2, out);
+        }
+        if(array_bit_test(out, 0))
+        {
+            array_add(out, mod, out);
+        }
+        array_div2(out, out);
+    }
+}
+
+void ModularExponentiation(ARRAY_TYPE m, ARRAY_TYPE e, ARRAY_TYPE mod, uint n, ARRAY_TYPE C, ARRAY_TYPE out)
+{
+    byte ONE[ARRAY_SIZE];
+    array_set(ONE, 1);
+
+    ModularMultiplication(m, C, mod, n, m);
+    ModularMultiplication(C, ONE, mod, n, out);
+
+    // step 2
+    for(int i = 0; i < n; i++)
+    {
+        if(array_bit_test(e, i))
+        {
+            ModularMultiplication(out, m, mod, n, out);
+        }
+        ModularMultiplication(m, m, mod, n, m);
+    }
+    ModularMultiplication(out, ONE, mod, n, out);
+}
+
+uint set_constants(ARRAY_TYPE mod, ARRAY_TYPE R, ARRAY_TYPE C)
+{
+    uint n = 8*(ARRAY_SIZE-1);
+    array_bit_set(R, n);
+    array_modulus(R, mod, C);
+    array_mulmod(C, C, mod, C);
+
+    printf("N=");
+    array_print(mod);
+    printf("R=");
+    array_print(R);
+    printf("C=");
+    array_print(C);
+
+    return n;
+}
+
+
 #endif // OPS_H
