@@ -1,0 +1,8 @@
+io-writebyte_.o
+io-writeword_.o
+io-writearray_.o
+io-init_input_.o
+io-fini_input_.o
+io-init_output_.o
+io-fini_output_.o
+io.gvt.o

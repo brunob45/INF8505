@@ -1,0 +1,133 @@
+/*
+-- File : control.n
+--
+-- Contents : nML model for the TLX processor -- control instructions.
+--
+-- Copyright (c) 2014-2016 Synopsys, Inc. This Synopsys processor model 
+-- captures an ASIP Designer Design Technique. The model and all associated 
+-- documentation are proprietary to Synopsys, Inc. and may only be used 
+-- pursuant to the terms and conditions of a written license agreement with 
+-- Synopsys, Inc.  All other use, reproduction, modification, or distribution 
+-- of the Synopsys processor model or the associated  documentation is 
+-- strictly prohibited. 
+*/
+
+
+
+opn control_instr(br_instr | j_instr | jal_instr | jalr_instr | jr_instr | swbrk_instr | nop_instr); 
+
+// Jump pipeline for j and jal
+//
+// i   : j    : IF  ID  EX  
+// i+1 : ds1  :     IF  ID  EX  
+// i+2 : t1   :         IF  ID  EX  
+
+// Jump pipeline for jalr, jar, beqz-taken and bnez-taken
+// Branch not taken pipeline: beqz-not-taken and bnez-not-taken
+//
+// i   : beqz : IF  ID  EX  
+// i+1 : ds1  :     IF  ID  EX  
+// i+2 : ds2  :         IF  ID  EX  
+// i+3 : n1   :             IF  ID  EX  
+
+trn cnd<bool>;
+trn of16<int16>;
+trn of26<int26>;
+trn trgt<w32>;
+trn lnk<w32>;
+
+trn ds1<uint1>;    hw_init ds1 = 0;
+trn ds2<uint1>;    hw_init ds2 = 0;
+
+fu eq;   // test beqz or bnez
+trn eqA<w32>;
+
+fu pca;
+trn pcaA<w32>;
+trn pcaB<w32>;
+trn pcaC<w32>;
+
+opn br_instr(op: opcode, a: mR1, i: c16s) 
+{
+    action {
+    stage ID:
+	ds1 = 1;
+    stage EX:
+	switch (op) {
+	case beqz: cnd = eqz(eqA=a) @eq; 
+	case bnez: cnd = nez(eqA=a) @eq;
+	}
+	br(cnd,of16=i);
+	ds2 = 1;
+    }
+    syntax : op " " a ",#" i;
+    image  : op::a::"00000"::i, delay_slots(2), chess_pc_offset(2);
+}
+
+opn j_instr(i: c26s) 
+{
+    action {
+    stage ID: 
+        j(of26=i);
+	ds1 = 1;
+    }
+    syntax : "j #" i;
+    image  : opcode.j::i, delay_slots(1), chess_pc_offset(1);
+}
+
+opn jal_instr(lr: mLR, i: c26s) 
+{
+    action { 
+    stage ID: 
+#if defined(__programmers_view__) 
+	lr = lnk = jal(of26=i); 
+#else
+	jal(of26=i); 
+	lr = pcaC = pcadd(pcaA=pcr=PC,pcaB=1) @pca;
+	ds1 = 1;
+#endif
+    }
+    syntax : "jal #" dec i;
+    dummy_syntax : lr;
+    image  : opcode.jal::i, delay_slots(1), chess_pc_offset(1);
+}
+
+opn jalr_instr(lr: mLR, b: mR2) 
+{
+    action { 
+    stage ID:
+	ds1 = 1;
+    stage EX:
+#if defined(__programmers_view__) 
+	lr = lnk = jalr(trgt=b);
+#else
+	lr = pcaC = pcadd(pcaA=pcr=PC,pcaB=1) @pca;
+	jalr(trgt=b); 
+	ds2 = 1;
+#endif
+    }
+    syntax : "jalr " b;
+    dummy_syntax : lr;
+    image  : opcode.jalr::b::"00000"::"0000000000000000", delay_slots(2);
+}
+
+opn jr_instr(a: mR1) 
+{
+    action {
+    stage ID: 
+	ds1 = 1;
+    stage EX: 
+        jr(trgt=a);
+	ds2 = 1;
+    }  
+    syntax : "jr " a;
+    image  : opcode.jr::a::"00000"::"0000000000000000", delay_slots(2);
+}
+
+opn nop_instr() 
+{
+    action { stage ID: nop(); }  
+    syntax : "nop";
+    image  : opcode.function::"00000"::"00000"::"00000"::function_code.nop;
+}
+

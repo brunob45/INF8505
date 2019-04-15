@@ -1,26 +1,37 @@
 #include <stdio.h>
 
-#define ARRAY_SIZE (1024/8+1)
+#define ARRAY_SIZE (1024/32+1)
 
-#include "constants.h"
+#include "llconstants.h"
 #include "ops.h"
 
-byte A[ARRAY_SIZE], B[ARRAY_SIZE], Z[ARRAY_SIZE];
+byte B[ARRAY_SIZE], Z[ARRAY_SIZE];
+
+//unsigned chess_storage(DMb%32) A [32] = {0,};
 
 int main()
 {
-    array_set(A, 0x123456);
-
-    printf("A=\n");
-    array_print(A);
-
-    ModularExponentiation(A, publicExponent, modulus, n, C, Z);
+    /*
+    array_add(INPUT, INPUT, Z);
+    array_print(Z);
+    array_div2(INPUT, Z);
+    array_print(Z);
+    /*
+    array_print(INPUT);
+    array_set(B, 0xffffffff);
+    array_add(INPUT, B, Z);
+    array_print(Z);
+    array_div2(Z, Z);
+    array_print(Z);
+    /**/
+    
+    ModularExponentiation(INPUT, publicExponent, modulus, n, C, Z);
     printf("Z=\n");
     array_print(Z);
 
-    ModularExponentiation(Z, privateExponent, modulus, n, C, A);
-    printf("A=\n");
-    array_print(A);
+    //ModularExponentiation(Z, privateExponent, modulus, n, C, B);
+    //printf("B=\n");
+    //array_print(B);
 
     return 0;
 

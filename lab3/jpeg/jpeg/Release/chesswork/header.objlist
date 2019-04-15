@@ -1,0 +1,7 @@
+header-write_APP0info_.o
+header-write_SOF0info_.o
+header-write_DQTinfo_.o
+header-write_DHTinfo_.o
+header-write_SOSinfo_.o
+header-write_headers_.o
+header.gvt.o

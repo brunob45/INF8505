@@ -1,0 +1,11 @@
+sha256-array_add_.o
+sha256-array_div2_.o
+sha256-array_reset_.o
+sha256-array_set_.o
+sha256-array_bit_test_.o
+sha256-array_print_.o
+sha256-array_copy_.o
+sha256-ModularMultiplication_.o
+sha256-ModularExponentiation_.o
+sha256-main_.o
+sha256.gvt.o
